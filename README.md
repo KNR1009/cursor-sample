@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# プロジェクト構成
 
-## Getting Started
+## ディレクトリ構造
 
-First, run the development server:
+src/
+├── app/ # Next.js App Router のルートディレクトリ
+│ ├── posts/ # 投稿一覧ページ
+│ │ ├── page.tsx # ページのエントリーポイント
+│ │ ├── container/ # データ取得とUIの接続を担当
+│ │ └── utils/ # ページ固有のユーティリティ
+│ │ └── fetcher/ # APIリクエスト関連の処理
+│ └── users/ # ユーザー一覧ページ（構成は posts/ と同様）
+├── features/ # 機能別のUIコンポーネント
+│ ├── posts/ # 投稿機能関連のコンポーネント
+│ │ ├── components/ # 再利用可能なUIパーツ
+│ │ └── page/ # ページ全体のUIコンポーネント
+│ └── users/ # ユーザー機能関連のコンポーネント
+└── types/ # 型定義ファイル
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 各ディレクトリの責務
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### `app/` ディレクトリ
+- Next.jsのApp Routerのルートディレクトリ
+- ルーティングとページの基本構造を定義
+- サーバーサイドの処理を主に配置
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+#### `_container/`
+- データ取得とUIコンポーネントの接続を担当
+- Server Componentsとして実装
+- 取得したデータをUIコンポーネントにpropsとして渡す
+- ビジネスロジックとUIの分離を実現
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+#### `_utils/fetcher/`
+- APIリクエストなどのデータ取得ロジックを配置
+- 再利用可能なフェッチ関数を定義
+- エラーハンドリングとキャッシュの設定を含む
 
-## Learn More
+### `features/` ディレクトリ
+- 機能単位でのUI実装を管理
+- プレゼンテーショナルコンポーネントを中心に配置
+- 再利用可能なUIコンポーネントをまとめる
 
-To learn more about Next.js, take a look at the following resources:
+#### `components/`
+- 機能固有の小規模なUIコンポーネント
+- 再利用可能なパーツとして実装
+- プレゼンテーショナルコンポーネントとして純粋なUI表示に専念
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+#### `page/`
+- 機能のメインとなるUIコンポーネント
+- ページ全体のレイアウトとコンポーネントの配置を担当
+- 複数のコンポーネントを組み合わせてページを構成
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### `types/` ディレクトリ
+- アプリケーション全体で使用する型定義
+- APIレスポンスの型や共通のインターフェースを定義
 
-## Deploy on Vercel
+## アーキテクチャの特徴
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **関心の分離**
+   - データ取得（Container）とUI表示（Components）を明確に分離
+   - 各コンポーネントの責務を明確化
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2. **再利用性**
+   - UIコンポーネントを小さな単位で作成
+   - 機能ごとにコンポーネントを整理
+
+3. **保守性**
+   - 機能単位でのディレクトリ構成により、関連するコードを集約
+   - 各ファイルの役割を明確化し、変更の影響範囲を限定
+
+4. **スケーラビリティ**
+   - 新機能の追加が容易
+   - 既存の構造を崩さずに機能を拡張可能
